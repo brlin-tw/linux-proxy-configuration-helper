@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Linux proxy configuration helper
+Upstream-Contact: Issues · 林博仁 Buo-ren Lin / Linux proxy configuration helper · GitLab <https://gitlab.com/brlin/linux-proxy-configuration-helper/-/issues>
+Source: https://gitlab.com/brlin/linux-proxy-configuration-helper
+
+Files:
+    *README.md
+    */README.md
+Copyright: Copyright 2024 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
+License: CC-BY-SA-4.0+

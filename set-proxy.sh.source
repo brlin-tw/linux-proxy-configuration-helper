@@ -1,0 +1,95 @@
+# shellcheck shell=bash
+# Configure proxy server settings
+#
+# Copyright 2024 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
+PROXY_PORT="${PROXY_PORT:-8228}"
+PROXY_SERVICE="${PROXY_SERVICE:-"http://${PROXY_HOST}:${PROXY_PORT}"}"
+
+printf \
+    'Info: Setting environment variables...\n'
+http_proxy="${PROXY_SERVICE}"
+HTTP_PROXY="${PROXY_SERVICE}"
+https_proxy="${PROXY_SERVICE}"
+HTTPS_PROXY="${PROXY_SERVICE}"
+no_proxy='localhost'
+NO_PROXY="${no_proxy}"
+
+export \
+    http_proxy HTTP_PROXY \
+    https_proxy HTTPS_PROXY \
+    no_proxy NO_PROXY
+
+if command -v snap >/dev/null; then
+    printf 'Info: Configuring HTTP proxy settings for snapd...\n'
+    if ! sudo snap set system proxy.http="${PROXY_SERVICE}"; then
+        printf \
+            'Warning: Unable to configure HTTP proxy settings for snapd.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Configuring HTTPS proxy settings for snapd...\n'
+    if ! sudo snap set system proxy.https="${PROXY_SERVICE}"; then
+        printf \
+            'Warning: Unable to configure HTTPS proxy settings for snapd.\n' \
+            1>&2
+    fi
+fi
+
+if command -v lxc >/dev/null; then
+    printf 'Info: Configuring HTTP proxy settings for LXD...\n'
+    if ! lxc config set core.proxy_http="${PROXY_SERVICE}"; then
+        printf \
+            'Warning: Unable to configure HTTP proxy settings for LXD.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Configuring HTTPS proxy settings for LXD...\n'
+    if ! lxc config set core.proxy_https="${PROXY_SERVICE}"; then
+        printf \
+            'Warning: Unable to configure HTTPS proxy settings for LXD.\n' \
+            1>&2
+    fi
+fi
+
+if command -v gsettings >/dev/null; then
+    printf 'Info: Enabling manual proxy settings for GNOME desktop and complying applications...\n'
+    if ! gsettings set org.gnome.system.proxy mode manual; then
+        printf \
+            'Warning: Unable to enable manual proxy settings for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Configuring HTTP proxy host setting for GNOME desktop and complying applications...\n'
+    if ! gsettings set org.gnome.system.proxy.http host "${PROXY_HOST}"; then
+        printf \
+            'Warning: Unable to configure HTTP proxy host setting for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Configuring HTTP proxy port setting for GNOME desktop and complying applications...\n'
+    if ! gsettings set org.gnome.system.proxy.http port "${PROXY_PORT}"; then
+        printf \
+            'Warning: Unable to configure HTTP proxy port setting for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Configuring HTTPS proxy host setting for GNOME desktop and complying applications...\n'
+    if ! gsettings set org.gnome.system.proxy.https host "${PROXY_HOST}"; then
+        printf \
+            'Warning: Unable to configure HTTPS proxy host setting for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Configuring HTTPS proxy port setting for GNOME desktop and complying applications...\n'
+    if ! gsettings set org.gnome.system.proxy.https port "${PROXY_PORT}"; then
+        printf \
+            'Warning: Unable to configure HTTPS proxy port setting for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+fi
+
+printf \
+    'Info: Operation completed successfully.\n'
+return 0

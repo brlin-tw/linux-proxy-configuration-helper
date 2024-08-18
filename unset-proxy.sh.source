@@ -1,0 +1,52 @@
+# shellcheck shell=bash
+# Configure proxy server settings
+#
+# Copyright 2024 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+printf \
+    'Info: Unsetting the proxy environment variables...\n'
+unset \
+    http_proxy HTTP_PROXY \
+    https_proxy HTTPS_PROXY \
+    no_proxy NO_PROXY
+
+if command -v snap >/dev/null; then
+    printf \
+        'Info: Unsetting HTTP/HTTPS proxy settings for snapd...\n'
+    if ! sudo snap unset system \
+        proxy.http \
+        proxy.https; then
+        printf \
+            'Warning: Unable to unset HTTP/HTTPS proxy settings for snapd.\n' \
+            1>&2
+    fi
+fi
+
+if command -v lxc >/dev/null; then
+    printf 'Info: Unconfiguring HTTP proxy settings for LXD...\n'
+    if ! lxc config unset core.proxy_http; then
+        printf \
+            'Warning: Unable to unconfigure HTTP proxy settings for LXD.\n' \
+            1>&2
+    fi
+
+    printf 'Info: Unconfiguring HTTPS proxy settings for LXD...\n'
+    if ! lxc config unset core.proxy_https; then
+        printf \
+            'Warning: Unable to unconfigure HTTPS proxy settings for LXD.\n' \
+            1>&2
+    fi
+fi
+
+if command -v gsettings >/dev/null; then
+    printf 'Info: Disabling manual proxy settings for GNOME desktop and complying applications...\n'
+    if ! gsettings set org.gnome.system.proxy mode none; then
+        printf \
+            'Warning: Unable to disable manual proxy settings for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+fi
+
+printf \
+    'Info: Operation completed successfully.\n'
+return 0

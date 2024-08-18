@@ -47,6 +47,20 @@ if command -v gsettings >/dev/null; then
     fi
 fi
 
+if command -v kwriteconfig5 >/dev/null; then
+    printf 'Info: Disabling manual proxy settings for KDE desktop and complying applications...\n'
+    kwriteconfig5_opts=(
+        --file kioslaverc
+        --group "Proxy Settings"
+        --key "ProxyType" 0
+    )
+    if ! kwriteconfig5 "${kwriteconfig5_opts[@]}"; then
+        printf \
+            'Warning: Unable to enable manual proxy settings for KDE desktop and complying applications.\n' \
+            1>&2
+    fi
+fi
+
 printf \
     'Info: Operation completed successfully.\n'
 return 0

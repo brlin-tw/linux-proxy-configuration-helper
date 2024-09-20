@@ -8,7 +8,7 @@ Helper scripts to assist in configuring proxy settings on a GNU/Linux desktop.
 ## Problems
 
 Currently there are several problems in the configuration of forward
-proxy settings:
+proxy settings on GNU+Linux operating systems:
 
 * Different desktop environments/applications/frameworks/services uses
   different methods to configure proxy server, there isn't a central

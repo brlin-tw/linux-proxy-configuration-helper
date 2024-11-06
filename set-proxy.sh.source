@@ -5,14 +5,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
 PROXY_PORT="${PROXY_PORT:-8228}"
-PROXY_SERVICE="${PROXY_SERVICE:-"http://${PROXY_HOST}:${PROXY_PORT}"}"
+
+proxy_service="http://${PROXY_HOST}:${PROXY_PORT}"
 
 printf \
     'Info: Setting environment variables...\n'
-http_proxy="${PROXY_SERVICE}"
-HTTP_PROXY="${PROXY_SERVICE}"
-https_proxy="${PROXY_SERVICE}"
-HTTPS_PROXY="${PROXY_SERVICE}"
+http_proxy="${proxy_service}"
+HTTP_PROXY="${proxy_service}"
+https_proxy="${proxy_service}"
+HTTPS_PROXY="${proxy_service}"
 no_proxy='localhost'
 NO_PROXY="${no_proxy}"
 
@@ -23,14 +24,14 @@ export \
 
 if command -v snap >/dev/null; then
     printf 'Info: Configuring HTTP proxy settings for snapd...\n'
-    if ! sudo snap set system proxy.http="${PROXY_SERVICE}"; then
+    if ! sudo snap set system proxy.http="${proxy_service}"; then
         printf \
             'Warning: Unable to configure HTTP proxy settings for snapd.\n' \
             1>&2
     fi
 
     printf 'Info: Configuring HTTPS proxy settings for snapd...\n'
-    if ! sudo snap set system proxy.https="${PROXY_SERVICE}"; then
+    if ! sudo snap set system proxy.https="${proxy_service}"; then
         printf \
             'Warning: Unable to configure HTTPS proxy settings for snapd.\n' \
             1>&2
@@ -39,14 +40,14 @@ fi
 
 if command -v lxc >/dev/null; then
     printf 'Info: Configuring HTTP proxy settings for LXD...\n'
-    if ! lxc config set core.proxy_http="${PROXY_SERVICE}"; then
+    if ! lxc config set core.proxy_http="${proxy_service}"; then
         printf \
             'Warning: Unable to configure HTTP proxy settings for LXD.\n' \
             1>&2
     fi
 
     printf 'Info: Configuring HTTPS proxy settings for LXD...\n'
-    if ! lxc config set core.proxy_https="${PROXY_SERVICE}"; then
+    if ! lxc config set core.proxy_https="${proxy_service}"; then
         printf \
             'Warning: Unable to configure HTTPS proxy settings for LXD.\n' \
             1>&2
@@ -130,4 +131,3 @@ fi
 
 printf \
     'Info: Operation completed successfully.\n'
-return 0

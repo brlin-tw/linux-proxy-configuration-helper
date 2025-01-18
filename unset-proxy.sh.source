@@ -56,7 +56,7 @@ if command -v kwriteconfig5 >/dev/null; then
     )
     if ! kwriteconfig5 "${kwriteconfig5_opts[@]}"; then
         printf \
-            'Warning: Unable to enable manual proxy settings for KDE desktop and complying applications.\n' \
+            'Warning: Unable to disable manual proxy settings for KDE desktop and complying applications.\n' \
             1>&2
     fi
 fi

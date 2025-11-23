@@ -1,0 +1,23 @@
+# shellcheck shell=bash
+# Common function definitions
+#
+# Copyright 2025 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
+# SPDX-License-Identifier: CC-BY-SA-4.0+
+compose_gsettings_ignorehosts(){
+    local -a no_proxy_hosts=("${@}"); set --
+
+    shopt -s nullglob
+    local result='['
+    local flag_first_hosts_encountered=false
+    for hosts in "${no_proxy_hosts[@]}"; do
+        if test "${flag_first_hosts_encountered}" == false; then
+            result+="'${hosts}'"
+            flag_first_hosts_encountered=true
+        else
+            result+=", '${hosts}'"
+        fi
+    done
+
+    result+=']'
+    printf '%s' "${result}"
+}

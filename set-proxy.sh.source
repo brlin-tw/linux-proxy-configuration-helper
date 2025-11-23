@@ -34,6 +34,11 @@ if ! source "${functions}"; then
     exit 1
 fi
 
+orig_ifs="${IFS}"
+IFS=,
+no_proxy="${NO_PROXY_HOSTS[*]}"
+IFS="${orig_ifs}"
+
 proxy_service="http://${PROXY_HOST}:${PROXY_PORT}"
 
 printf \
@@ -114,6 +119,20 @@ if command -v gsettings >/dev/null; then
     if ! gsettings set org.gnome.system.proxy.https port "${PROXY_PORT}"; then
         printf \
             'Warning: Unable to configure HTTPS proxy port setting for GNOME desktop and complying applications.\n' \
+            1>&2
+    fi
+
+    if ! gsettings_ignorehosts="$(
+        compose_gsettings_ignorehosts "${NO_PROXY_HOSTS[@]}"
+        )"; then
+        printf \
+            'Warning: Unable to determine the gsettings ignorehosts.\n' \
+            1>&2
+    fi
+    printf 'Info: Configuring ignored hosts setting for GNOME desktop and complying application...\n'
+    if ! gsettings set org.gnome.system.proxy ignore-hosts "${gsettings_ignorehosts}"; then
+        printf \
+            'Warning: Unable to configure ignored hosts setting for GNOME desktop and complying application.\n' \
             1>&2
     fi
 fi

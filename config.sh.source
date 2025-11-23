@@ -1,0 +1,5 @@
+# shellcheck shell=bash
+# Configuration file
+PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
+PROXY_PORT="${PROXY_PORT:-8228}"
+PRVL_ESCL_CMD="${PRVL_ESCL_CMD:-"sudo"}"

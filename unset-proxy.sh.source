@@ -3,6 +3,27 @@
 #
 # Copyright 2024 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+script="${BASH_SOURCE[0]}"
+if ! script="$(
+    realpath --strip "${script}"
+    )"; then
+    printf \
+        'Error: Unable to determine the absolute path of this script.\n' \
+        1>&2
+    exit 1
+fi
+script_dir="${script%/*}"
+config="${script_dir}/config.sh.source"
+# shellcheck source=SCRIPTDIR/config.sh.source
+if ! source "${config}"; then
+    printf \
+        'Error: Unable to load the "%s" config file.\n' \
+        "${config}" \
+        1>&2
+    exit 1
+fi
+
 printf \
     'Info: Unsetting the proxy environment variables...\n'
 unset \

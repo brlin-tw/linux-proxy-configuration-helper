@@ -3,8 +3,36 @@
 #
 # Copyright 2024 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
-PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
-PROXY_PORT="${PROXY_PORT:-8228}"
+
+script="${BASH_SOURCE[0]}"
+if ! script="$(
+    realpath --strip "${script}"
+    )"; then
+    printf \
+        'Error: Unable to determine the absolute path of this script.\n' \
+        1>&2
+    exit 1
+fi
+script_dir="${script%/*}"
+config="${script_dir}/config.sh.source"
+# shellcheck source=SCRIPTDIR/config.sh.source
+if ! source "${config}"; then
+    printf \
+        'Error: Unable to load the "%s" config file.\n' \
+        "${config}" \
+        1>&2
+    exit 1
+fi
+
+functions="${script_dir}/functions.sh.source"
+# shellcheck source=SCRIPTDIR/functions.sh.source
+if ! source "${functions}"; then
+    printf \
+        'Error: Unable to load the "%s" common function definitions file.\n' \
+        "${functions}" \
+        1>&2
+    exit 1
+fi
 
 proxy_service="http://${PROXY_HOST}:${PROXY_PORT}"
 
@@ -14,7 +42,6 @@ http_proxy="${proxy_service}"
 HTTP_PROXY="${proxy_service}"
 https_proxy="${proxy_service}"
 HTTPS_PROXY="${proxy_service}"
-no_proxy='localhost'
 NO_PROXY="${no_proxy}"
 
 export \

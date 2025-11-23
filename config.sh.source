@@ -1,5 +1,8 @@
 # shellcheck shell=bash
 # Configuration file
+#
+# Copyright 2025 林博仁(Buo-ren Lin) <buo.ren.lin@gmail.com>
+# SPDX-License-Identifier: CC-BY-SA-4.0+
 PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
 PROXY_PORT="${PROXY_PORT:-8228}"
 PRVL_ESCL_CMD="${PRVL_ESCL_CMD:-"sudo"}"

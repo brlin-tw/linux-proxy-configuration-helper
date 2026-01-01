@@ -31,10 +31,8 @@ text terminal, which simplifies the configuration process.
 
 1. Download the release package from [the project's Releases page](https://gitlab.com/brlin/linux-proxy-configuration-helper/-/releases).
 1. Extract the downloaded release package.
-1. Edit [the set-proxy.sh.source proxy configuration script](set-proxy.sh.source)
-   and [the unset-proxy.sh.source proxy de-configuration script](unset-proxy.sh.source)
-   in the extracted release package to customize the header variables
-   according to your proxy configuration setup.
+1. Edit [the configuration file](config.sh.source) in the extracted
+   release package according to your proxy configuration setup.
 1. Launch a text terminal, then change the working directory to the
    extracted release package directory by running the following command:
 

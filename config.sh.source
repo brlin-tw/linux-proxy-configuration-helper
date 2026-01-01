@@ -17,3 +17,19 @@ NO_PROXY_HOSTS=(
     "10.0.0.0/8"
     "*.local"
 )
+
+# Used in set-proxy.sh.source and unset-proxy.sh.source
+# shellcheck disable=SC2034
+declare -A vscode_like_product_displaynames=(
+    [code]="Visual Studio Code"
+    [cursor]="Cursor"
+    [antigravity]="Antigravity"
+)
+
+# Used in set-proxy.sh.source and unset-proxy.sh.source
+# shellcheck disable=SC2034
+declare -A vscode_like_product_codenames=(
+    [code]="Code"
+    [cursor]="Cursor"
+    [antigravity]="Antigravity"
+)

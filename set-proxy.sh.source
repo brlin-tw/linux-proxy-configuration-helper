@@ -182,59 +182,67 @@ if command -v kwriteconfig5 >/dev/null; then
     fi
 fi
 
-vscode_user_settings="${XDG_CONFIG_HOME:-"${HOME}/.config"}/Code/User/settings.json"
-if command -v code >/dev/null \
-    && test -e "${vscode_user_settings}"; then
-    printf 'Info: Enabling manual proxy settings for Visual Studio Code...\n'
-
-    # When arguments are more than format specifiers, printf reuses the format string.
-    if ! no_proxy_hosts_json_strings="$(
-        printf '%s\n' "${NO_PROXY_HOSTS[@]}" \
-            | jq --raw-input .
-        )"; then
+for id in "${!vscode_like_product_displaynames[@]}"; do
+    product_codename="${vscode_like_product_codenames[${id}]}"
+    product_settings="${XDG_CONFIG_HOME:-"${HOME}/.config"}/${product_codename}/User/settings.json"
+    product_displayname="${vscode_like_product_displaynames[${id}]}"
+    if test -e "${product_settings}"; then
         printf \
-            'Error: Unable to convert NO_PROXY hosts to JSON strings.\n' \
-            1>&2
-        return 1
-    fi
+            'Info: Enabling manual proxy settings for %s...\n' \
+            "${product_displayname}"
 
-    if ! no_proxy_hosts_json_array="$(
-        jq -s . <<<"${no_proxy_hosts_json_strings}"
-        )"; then
-        printf \
-            'Error: Unable to convert NO_PROXY hosts JSON strings to JSON array.\n' \
-            1>&2
-        return 1
-    fi
-
-    if ! jq \
-        --arg proxy "${proxy_service}" \
-        --argjson noproxy "${no_proxy_hosts_json_array}" \
-        '. + {
-            "http.proxy": $proxy,
-            "http.proxyStrictSSL": false,
-            "http.noProxy": $noproxy
-        }' \
-        "${vscode_user_settings}" \
-        >"${vscode_user_settings}.tmp"; then
-        printf \
-            'Error: Unable to update VS Code proxy settings using jq.\n' \
-            1>&2
-        return 1
-    fi
-
-    if ! mv -f "${vscode_user_settings}.tmp" "${vscode_user_settings}"; then
-        printf \
-            'Error: Unable to overwrite VS Code settings file.\n' \
-            1>&2
-        if ! rm "${vscode_user_settings}.tmp"; then
+        # When arguments are more than format specifiers, printf reuses the format string.
+        if ! no_proxy_hosts_json_strings="$(
+            printf '%s\n' "${NO_PROXY_HOSTS[@]}" \
+                | jq --raw-input .
+            )"; then
             printf \
-                'Warning: Unable to remove temporary VS Code settings file.\n' \
+                'Error: Unable to convert NO_PROXY hosts to JSON strings.\n' \
                 1>&2
+            return 1
         fi
-        return 1
+
+        if ! no_proxy_hosts_json_array="$(
+            jq -s . <<<"${no_proxy_hosts_json_strings}"
+            )"; then
+            printf \
+                'Error: Unable to convert NO_PROXY hosts JSON strings to JSON array.\n' \
+                1>&2
+            return 1
+        fi
+
+        if ! jq \
+            --arg proxy "${proxy_service}" \
+            --argjson noproxy "${no_proxy_hosts_json_array}" \
+            '. + {
+                "http.proxy": $proxy,
+                "http.proxyStrictSSL": false,
+                "http.noProxy": $noproxy
+            }' \
+            "${product_settings}" \
+            >"${product_settings}.tmp"; then
+            printf \
+                'Error: Unable to update %s proxy settings using jq.\n' \
+                "${product_displayname}" \
+                1>&2
+            return 1
+        fi
+
+        if ! mv -f "${product_settings}.tmp" "${product_settings}"; then
+            printf \
+                'Error: Unable to overwrite %s settings file.\n' \
+                "${product_displayname}" \
+                1>&2
+            if ! rm "${product_settings}.tmp"; then
+                printf \
+                    'Warning: Unable to remove temporary %s settings file.\n' \
+                    "${product_displayname}" \
+                    1>&2
+            fi
+            return 1
+        fi
     fi
-fi
+done
 
 printf \
     'Info: Operation completed successfully.\n'

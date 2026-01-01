@@ -82,33 +82,41 @@ if command -v kwriteconfig5 >/dev/null; then
     fi
 fi
 
-vscode_user_settings="${XDG_CONFIG_HOME:-"${HOME}/.config"}/Code/User/settings.json"
-if command -v code >/dev/null \
-    && test -e "${vscode_user_settings}"; then
-    printf 'Info: Disabling manual proxy settings for Visual Studio Code...\n'
-
-    if ! jq \
-        'del(."http.proxy", ."http.proxyStrictSSL", ."http.noProxy")' \
-        "${vscode_user_settings}" \
-        >"${vscode_user_settings}.tmp"; then
+for id in "${!vscode_like_product_displaynames[@]}"; do
+    product_codename="${vscode_like_product_codenames[${id}]}"
+    product_settings="${XDG_CONFIG_HOME:-"${HOME}/.config"}/${product_codename}/User/settings.json"
+    product_displayname="${vscode_like_product_displaynames[${id}]}"
+    if test -e "${product_settings}"; then
         printf \
-            'Error: Unable to update VS Code proxy settings using jq.\n' \
-            1>&2
-        return 1
-    fi
+            'Info: Disabling manual proxy settings for %s...\n' \
+            "${product_displayname}"
 
-    if ! mv -f "${vscode_user_settings}.tmp" "${vscode_user_settings}"; then
-        printf \
-            'Error: Unable to overwrite the VS Code settings file.\n' \
-            1>&2
-        if ! rm "${vscode_user_settings}.tmp"; then
+        if ! jq \
+            'del(."http.proxy", ."http.proxyStrictSSL", ."http.noProxy")' \
+            "${product_settings}" \
+            >"${product_settings}.tmp"; then
             printf \
-                'Warning: Unable to remove temporary the VS Code settings file.\n' \
+                'Error: Unable to update %s proxy settings using jq.\n' \
+                "${product_displayname}" \
                 1>&2
+            return 1
         fi
-        return 1
+
+        if ! mv -f "${product_settings}.tmp" "${product_settings}"; then
+            printf \
+                'Error: Unable to overwrite the %s settings file.\n' \
+                "${product_displayname}" \
+                1>&2
+            if ! rm "${product_settings}.tmp"; then
+                printf \
+                    'Warning: Unable to remove temporary the %s settings file.\n' \
+                    "${product_displayname}" \
+                    1>&2
+            fi
+            return 1
+        fi
     fi
-fi
+done
 
 printf \
     'Info: Operation completed successfully.\n'

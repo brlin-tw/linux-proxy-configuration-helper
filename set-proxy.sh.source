@@ -91,6 +91,13 @@ if command -v lxc >/dev/null; then
             'Warning: Unable to configure HTTPS proxy settings for LXD.\n' \
             1>&2
     fi
+
+    printf 'Info: Configuring ignored hosts settings for LXD...\n'
+    if ! lxc config set core.proxy_ignore_hosts "${NO_PROXY}"; then
+        printf \
+            'Warning: Unable to configure ignored hosts settings for LXD.\n' \
+            1>&2
+    fi
 fi
 
 if command -v gsettings >/dev/null; then

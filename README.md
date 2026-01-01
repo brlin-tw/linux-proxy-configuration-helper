@@ -82,6 +82,18 @@ The following materials are referenced during the development of this project:
 
 * [Linux修改系统代理 - JoXrays's Blog](https://www.joxrays.com/linux-system-proxy/)  
   Explains how to modify proxy settings using text terminal commands.
+* [curl - How To Use - Environment](https://curl.se/docs/manpage.html)  
+  Explains common environment variables used to configure proxy settings.
+* [DevGnomeOrg/Gnome3PortingGuide/ProxyConfiguration – GNOME Wiki Archive](https://wiki.gnome.org/DevGnomeOrg(2f)Gnome3PortingGuide(2f)ProxyConfiguration.html)  
+  Explains how to modify proxy settings for GSettings-based applications.
+* [Proxy | KDE 5 docs](https://docs.kde.org/trunk5/en/kio/kcontrol5/proxy/)  
+  Explains how to modify proxy settings for KDE-based applications.
+* [Core configuration | Server configuration](https://documentation.ubuntu.com/lxd/latest/server/#core-configuration)  
+  Explains the proxy configuration options for LXD.
+* [system proxy.{http,https,ftp} | System options | Snapcraft documentation](https://snapcraft.io/docs/system-options#heading--proxy)  
+  Explains the proxy configuration options for Snapd.
+* [Legacy proxy server support | Network Connections in Visual Studio Code](https://code.visualstudio.com/docs/setup/network#_legacy-proxy-server-support)  
+  Explains how to modify proxy settings for Visual Studio Code-like applications.
 
 ## Licensing
 

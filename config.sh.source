@@ -6,3 +6,14 @@
 PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
 PROXY_PORT="${PROXY_PORT:-8228}"
 PRVL_ESCL_CMD="${PRVL_ESCL_CMD:-"sudo"}"
+
+NO_PROXY_HOSTS=(
+    "localhost"
+    "127.0.0.1"
+    "*.localhost"
+    "::1"
+    "192.168.0.0/16"
+    "172.16.0.0/12"
+    "10.0.0.0/8"
+    "*.local"
+)

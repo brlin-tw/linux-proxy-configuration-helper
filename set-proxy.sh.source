@@ -34,6 +34,13 @@ if ! source "${functions}"; then
     exit 1
 fi
 
+if ! check_runtime_dependencies; then
+    printf \
+        'Error: Runtime dependencies check failed.\n' \
+        1>&2
+    exit 1
+fi
+
 orig_ifs="${IFS}"
 IFS=,
 no_proxy="${NO_PROXY_HOSTS[*]}"
@@ -172,6 +179,60 @@ if command -v kwriteconfig5 >/dev/null; then
         printf \
             'Warning: Unable to configure HTTPS proxy setting for KDE desktop and complying applications.\n' \
             1>&2
+    fi
+fi
+
+vscode_user_settings="${XDG_CONFIG_HOME:-"${HOME}/.config"}/Code/User/settings.json"
+if command -v code >/dev/null \
+    && test -e "${vscode_user_settings}"; then
+    printf 'Info: Enabling manual proxy settings for Visual Studio Code...\n'
+
+    # When arguments are more than format specifiers, printf reuses the format string.
+    if ! no_proxy_hosts_json_strings="$(
+        printf '%s\n' "${NO_PROXY_HOSTS[@]}" \
+            | jq --raw-input .
+        )"; then
+        printf \
+            'Error: Unable to convert NO_PROXY hosts to JSON strings.\n' \
+            1>&2
+        return 1
+    fi
+
+    if ! no_proxy_hosts_json_array="$(
+        jq -s . <<<"${no_proxy_hosts_json_strings}"
+        )"; then
+        printf \
+            'Error: Unable to convert NO_PROXY hosts JSON strings to JSON array.\n' \
+            1>&2
+        return 1
+    fi
+
+    if ! jq \
+        --arg proxy "${proxy_service}" \
+        --argjson noproxy "${no_proxy_hosts_json_array}" \
+        '. + {
+            "http.proxy": $proxy,
+            "http.proxyStrictSSL": false,
+            "http.noProxy": $noproxy
+        }' \
+        "${vscode_user_settings}" \
+        >"${vscode_user_settings}.tmp"; then
+        printf \
+            'Error: Unable to update VS Code proxy settings using jq.\n' \
+            1>&2
+        return 1
+    fi
+
+    if ! mv -f "${vscode_user_settings}.tmp" "${vscode_user_settings}"; then
+        printf \
+            'Error: Unable to overwrite VS Code settings file.\n' \
+            1>&2
+        if ! rm "${vscode_user_settings}.tmp"; then
+            printf \
+                'Warning: Unable to remove temporary VS Code settings file.\n' \
+                1>&2
+        fi
+        return 1
     fi
 fi
 

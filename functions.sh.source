@@ -21,3 +21,23 @@ compose_gsettings_ignorehosts(){
     result+=']'
     printf '%s' "${result}"
 }
+
+check_runtime_dependencies(){
+    local -a required_commands=(
+        jq
+    )
+    local check_failed=false
+    for command in "${required_commands[@]}"; do
+        if ! command -v "${command}" >/dev/null 2>&1; then
+            printf \
+                'Error: Required command "%s" is not installed.' \
+                "${command}" \
+                >&2
+            check_failed=true
+        fi
+    done
+
+    if test "${check_failed}" = true; then
+        return 1
+    fi
+}

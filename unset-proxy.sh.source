@@ -82,6 +82,34 @@ if command -v kwriteconfig5 >/dev/null; then
     fi
 fi
 
+vscode_user_settings="${XDG_CONFIG_HOME:-"${HOME}/.config"}/Code/User/settings.json"
+if command -v code >/dev/null \
+    && test -e "${vscode_user_settings}"; then
+    printf 'Info: Disabling manual proxy settings for Visual Studio Code...\n'
+
+    if ! jq \
+        'del(."http.proxy", ."http.proxyStrictSSL", ."http.noProxy")' \
+        "${vscode_user_settings}" \
+        >"${vscode_user_settings}.tmp"; then
+        printf \
+            'Error: Unable to update VS Code proxy settings using jq.\n' \
+            1>&2
+        return 1
+    fi
+
+    if ! mv -f "${vscode_user_settings}.tmp" "${vscode_user_settings}"; then
+        printf \
+            'Error: Unable to overwrite the VS Code settings file.\n' \
+            1>&2
+        if ! rm "${vscode_user_settings}.tmp"; then
+            printf \
+                'Warning: Unable to remove temporary the VS Code settings file.\n' \
+                1>&2
+        fi
+        return 1
+    fi
+fi
+
 printf \
     'Info: Operation completed successfully.\n'
 return 0

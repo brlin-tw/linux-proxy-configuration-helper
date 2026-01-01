@@ -49,7 +49,8 @@ text terminal, which simplifies the configuration process.
    ln_opts=(
         # Create symbolic link instead of hark link
         --symbolic
-        # Use relative path in the link target
+        # Use relative path in the link target, avoid breakage when
+        # renaming/moving the home directory
         --relative
         # Replace existing links
         --force

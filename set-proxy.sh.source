@@ -245,4 +245,13 @@ for id in "${!vscode_like_product_displaynames[@]}"; do
 done
 
 printf \
+    'Info: Configuring proxy settings for Git...\n'
+if ! git config --global http.proxy "${proxy_service}"; then
+    printf \
+        'Warning: Unable to configure proxy settings for Git.\n' \
+        1>&2
+    return 1
+fi
+
+printf \
     'Info: Operation completed successfully.\n'

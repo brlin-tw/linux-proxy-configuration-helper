@@ -119,5 +119,14 @@ for id in "${!vscode_like_product_displaynames[@]}"; do
 done
 
 printf \
+    'Info: Unconfiguring proxy settings for Git...\n'
+if ! git config --global --unset http.proxy; then
+    printf \
+        'Warning: Unable to unconfigure proxy settings for Git.\n' \
+        1>&2
+    return 1
+fi
+
+printf \
     'Info: Operation completed successfully.\n'
 return 0

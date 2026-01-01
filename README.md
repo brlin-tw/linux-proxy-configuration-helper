@@ -73,9 +73,10 @@ text terminal, which simplifies the configuration process.
    source ~/unset-proxy.sh.source
    ```
 
-   Note that for text terminal operations the proxy configuration only
-   applies to this text terminal session, if you started a new one you
-   need to source the configuration script again.
+   Note that for most command-line applications the proxy configuration
+   only applies to the text terminal session you run the `source`
+   command in, if you are in another one you need to source the
+   configuration script again.
 
 ## References
 

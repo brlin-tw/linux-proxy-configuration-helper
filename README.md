@@ -94,6 +94,8 @@ The following materials are referenced during the development of this project:
   Explains the proxy configuration options for Snapd.
 * [Legacy proxy server support | Network Connections in Visual Studio Code](https://code.visualstudio.com/docs/setup/network#_legacy-proxy-server-support)  
   Explains how to modify proxy settings for Visual Studio Code-like applications.
+* [Proxy KCM: Show a warning when a KIO-specific setting is selected (!422) · Merge requests · Frameworks / KIO · GitLab](https://invent.kde.org/frameworks/kio/-/merge_requests/422)  
+  Explains what the proxy settings in the KDE System Settings application applies to.
 
 ## Licensing
 

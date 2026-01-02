@@ -22,6 +22,26 @@ compose_gsettings_ignorehosts(){
     printf '%s' "${result}"
 }
 
+compose_kio_ignorehosts(){
+    local -a no_proxy_hosts=("${@}"); set --
+
+    local result=''
+    local flag_first_hosts_encountered=false
+    for hosts in "${no_proxy_hosts[@]}"; do
+        # *.example.com -> .example.com
+        hosts="${hosts#\*}"
+
+        if test "${flag_first_hosts_encountered}" == false; then
+            result+="${hosts}"
+            flag_first_hosts_encountered=true
+        else
+            result+=",${hosts}"
+        fi
+    done
+
+    printf '%s' "${result}"
+}
+
 check_runtime_dependencies(){
     local -a required_commands=(
         jq

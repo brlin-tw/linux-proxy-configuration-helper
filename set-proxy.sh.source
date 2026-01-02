@@ -187,6 +187,26 @@ if command -v kwriteconfig5 >/dev/null; then
             'Warning: Unable to configure HTTPS proxy setting for KDE desktop and complying applications.\n' \
             1>&2
     fi
+
+    printf 'Info: Configuring ignored hosts setting for KDE desktop and complying applications...\n'
+    if ! compose_kio_ignorehosts="$(
+        compose_kio_ignorehosts "${NO_PROXY_HOSTS[@]}"
+        )"; then
+        printf \
+            'Error: Unable to compose KIO ignore hosts string.\n' \
+            1>&2
+        return 1
+    fi
+    kwriteconfig5_opts=(
+        --file kioslaverc
+        --group "Proxy Settings"
+        --key "NoProxyFor" "${compose_kio_ignorehosts}"
+    )
+    if ! kwriteconfig5 "${kwriteconfig5_opts[@]}"; then
+        printf \
+            'Warning: Unable to configure ignored hosts setting for KDE desktop and complying applications.\n' \
+            1>&2
+    fi
 fi
 
 for id in "${!vscode_like_product_displaynames[@]}"; do

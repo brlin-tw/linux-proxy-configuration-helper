@@ -7,6 +7,8 @@ PROXY_HOST="${PROXY_HOST:-192.168.49.1}"
 PROXY_PORT="${PROXY_PORT:-8228}"
 PRVL_ESCL_CMD="${PRVL_ESCL_CMD:-"sudo"}"
 
+# Used in set-proxy.sh.source and functions.sh.source
+# shellcheck disable=SC2034
 NO_PROXY_HOSTS=(
     "localhost"
     "127.0.0.1"

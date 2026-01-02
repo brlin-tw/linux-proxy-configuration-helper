@@ -61,3 +61,35 @@ check_runtime_dependencies(){
         return 1
     fi
 }
+
+# Query the major version of the installed KDE desktop
+#
+# Standard output:
+#
+# The major version number of the installed KDE desktop, or an empty
+# string when nothing can be determined.
+#
+# Return values:
+#
+# * 0: Successfully queried the KDE major version (may be empty).
+# * 1: An error occurred.
+query_kde_major_version(){
+    if ! command -v plasmashell >/dev/null 2>&1; then
+        # not installed
+        return 0
+    fi
+
+    local kde_plasma_version
+    if ! kde_plasma_version="$(plasmashell --version 2>/dev/null)"; then
+        printf \
+            'Error: Unable to query KDE Plasma version using the "plasmashell" command.\n' \
+            1>&2
+        return 1
+    fi
+
+    # Example output: "plasmashell 5.24.5"
+    local kde_major_version="${kde_plasma_version#plasmashell }"
+    kde_major_version="${kde_major_version%%.*}"
+
+    printf '%s' "${kde_major_version}"
+}

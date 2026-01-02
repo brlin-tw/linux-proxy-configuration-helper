@@ -91,7 +91,7 @@ if test -n "${kde_major_version}"; then
         'Info: Using "%s" to modify KDE configuration files.\n' \
         "${kwriteconfig}"
     if command -v "${kwriteconfig}" >/dev/null; then
-        printf 'Info: Disabling manual proxy settings for KDE desktop and complying applications...\n'
+        printf 'Info: Disabling manual proxy settings for KIO...\n'
         kwriteconfig_opts=(
             --file kioslaverc
             --group "Proxy Settings"
@@ -99,7 +99,7 @@ if test -n "${kde_major_version}"; then
         )
         if ! "${kwriteconfig}" "${kwriteconfig_opts[@]}"; then
             printf \
-                'Warning: Unable to disable manual proxy settings for KDE desktop and complying applications.\n' \
+                'Warning: Unable to disable manual proxy settings for KIO.\n' \
                 1>&2
         fi
     fi

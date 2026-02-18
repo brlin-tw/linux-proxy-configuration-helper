@@ -153,7 +153,9 @@ done
 
 printf \
     'Info: Unconfiguring proxy settings for Git...\n'
-if ! git config --global --unset http.proxy; then
+# NOTE: When the exit status of the git-config command is 5, it means
+# the key to be unset does not exist, which is not an error in this context
+if ! ( git config --global --unset http.proxy || test "${?}" -eq 5 ); then
     printf \
         'Warning: Unable to unconfigure proxy settings for Git.\n' \
         1>&2

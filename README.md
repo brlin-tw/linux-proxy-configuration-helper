@@ -96,6 +96,8 @@ The following materials are referenced during the development of this project:
   Explains how to modify proxy settings for Visual Studio Code-like applications.
 * [Proxy KCM: Show a warning when a KIO-specific setting is selected (!422) · Merge requests · Frameworks / KIO · GitLab](https://invent.kde.org/frameworks/kio/-/merge_requests/422)  
   Explains what the proxy settings in the KDE System Settings application applies to.
+* [DESCRIPTION | Git - git-config Documentation](https://git-scm.com/docs/git-config#_description)  
+  Explains the definition of the `5` exit status code of the `git config` command.
 
 ## Licensing
 

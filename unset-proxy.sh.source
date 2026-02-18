@@ -24,6 +24,16 @@ if ! source "${config}"; then
     return 1
 fi
 
+functions="${script_dir}/functions.sh.source"
+# shellcheck source=SCRIPTDIR/functions.sh.source
+if ! source "${functions}"; then
+    printf \
+        'Error: Unable to load the "%s" common function definitions file.\n' \
+        "${functions}" \
+        1>&2
+    return 1
+fi
+
 printf \
     'Info: Unsetting the proxy environment variables...\n'
 unset \

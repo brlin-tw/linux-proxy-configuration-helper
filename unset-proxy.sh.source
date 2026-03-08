@@ -149,7 +149,7 @@ for id in "${!vscode_like_product_displaynames[@]}"; do
                 1>&2
             if ! rm "${product_settings}.tmp"; then
                 printf \
-                    'Warning: Unable to remove temporary the %s settings file.\n' \
+                    'Warning: Unable to remove temporary %s settings file.\n' \
                     "${product_displayname}" \
                     1>&2
             fi

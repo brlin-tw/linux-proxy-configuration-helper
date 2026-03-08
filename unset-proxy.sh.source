@@ -169,6 +169,23 @@ if ! ( git config --global --unset http.proxy || test "${?}" -eq 5 ); then
     return 1
 fi
 
+if test -f "/var/lib/PackageKit/transactions.db"; then
+    printf 'Info: Clearing proxy settings from PackageKit database...\n'
+    if ! sudo sqlite3 "/var/lib/PackageKit/transactions.db" "DELETE FROM proxy;"; then
+        printf \
+            'Error: Unable to clear proxy settings from PackageKit database.\n' \
+            1>&2
+        return 1
+    fi
+
+    if ! sudo pkcon quit; then
+        printf \
+            'Error: Unable to quit the PackageKit daemon to reload proxy settings.\n' \
+            1>&2
+        return 1
+    fi
+fi
+
 printf \
     'Info: Operation completed successfully.\n'
 return 0

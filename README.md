@@ -98,6 +98,10 @@ The following materials are referenced during the development of this project:
   Explains what the proxy settings in the KDE System Settings application applies to.
 * [DESCRIPTION | Git - git-config Documentation](https://git-scm.com/docs/git-config#_description)  
   Explains the definition of the `5` exit status code of the `git config` command.
+* [Andrew Valenzuela's reply - I setup a proxy IP (failed to setup) and now Discover is giving errors when trying to update for some PPAs - Help - KDE Discuss](https://discuss.kde.org/t/i-setup-a-proxy-ip-failed-to-setup-and-now-discover-is-giving-errors-when-trying-to-update-for-some-ppas/4627/5)  
+  Explains how to clear the proxy settings for PackageKit-based applications.
+* [Matthias Klumpp's reply · PackageKit doesn't reset proxy setting when global proxy gets disabled · Issue #392 · PackageKit/PackageKit](https://github.com/PackageKit/PackageKit/issues/392#issuecomment-3802070532)  
+  Explains the rationale of PackageKit's behavior of remembering the proxy settings even when the global proxy is disabled.
 
 ## Licensing
 

@@ -45,6 +45,7 @@ compose_kio_ignorehosts(){
 check_runtime_dependencies(){
     local -a required_commands=(
         jq
+        sqlite3
     )
     local check_failed=false
     for command in "${required_commands[@]}"; do

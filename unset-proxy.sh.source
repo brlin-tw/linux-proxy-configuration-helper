@@ -34,6 +34,13 @@ if ! source "${functions}"; then
     return 1
 fi
 
+if ! check_runtime_dependencies; then
+    printf \
+        'Error: Runtime dependencies check failed.\n' \
+        1>&2
+    return 1
+fi
+
 printf \
     'Info: Unsetting the proxy environment variables...\n'
 unset \

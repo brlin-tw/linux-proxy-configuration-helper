@@ -255,18 +255,57 @@ for id in "${!vscode_like_product_displaynames[@]}"; do
             return 1
         fi
 
-        if ! jq \
-            --arg proxy "${proxy_service}" \
-            --argjson noproxy "${no_proxy_hosts_json_array}" \
-            '. + {
-                "http.proxy": $proxy,
-                "http.proxyStrictSSL": false,
-                "http.noProxy": $noproxy
-            }' \
-            "${product_settings}" \
-            >"${product_settings}.tmp"; then
+        jsonc_modify_opts=(
+            --format
+            -p '["http.proxy"]'
+            -v "\"${proxy_service}\""
+        )
+        if ! jsonc_modify_result="$(
+            # Workaround jsonc output nothing when the input is fed via `<` redirection
+            # https://github.com/ricsam/jsonc-cli/issues/6
+            cat "${product_settings}" \
+                | jsonc modify "${jsonc_modify_opts[@]}"
+            )"; then
             printf \
-                'Error: Unable to update %s proxy settings using jq.\n' \
+                'Error: Unable to update %s proxy settings using jsonc.\n' \
+                "${product_displayname}" \
+                1>&2
+            return 1
+        fi
+
+        jsonc_modify_opts=(
+            --format
+            -p '["http.proxyStrictSSL"]'
+            -v false
+        )
+        if ! jsonc_modify_result="$(
+            jsonc modify "${jsonc_modify_opts[@]}" <<<"${jsonc_modify_result}"
+            )"; then
+            printf \
+                'Error: Unable to update %s proxy settings using jsonc.\n' \
+                "${product_displayname}" \
+                1>&2
+            return 1
+        fi
+
+        jsonc_modify_opts=(
+            --format
+            -p '["http.noProxy"]'
+            -v "${no_proxy_hosts_json_array}"
+        )
+        if ! jsonc_modify_result="$(
+            jsonc modify "${jsonc_modify_opts[@]}" <<<"${jsonc_modify_result}"
+            )"; then
+            printf \
+                'Error: Unable to update %s proxy settings using jsonc.\n' \
+                "${product_displayname}" \
+                1>&2
+            return 1
+        fi
+
+        if ! printf '%s\n' "${jsonc_modify_result}" >"${product_settings}.tmp"; then
+            printf \
+                'Error: Unable to write temporary %s settings file.\n' \
                 "${product_displayname}" \
                 1>&2
             return 1

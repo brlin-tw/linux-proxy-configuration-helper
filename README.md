@@ -24,7 +24,11 @@ text terminal, which simplifies the configuration process.
 
 ## Prerequisites
 
-* You need to have the `sudo` software installed.
+* You need to have the following commands available in your command search PATHs:
+    + `sudo`  
+      For running commands that require root privileges.
+    + `jsonc`  
+      For modifying JSONC configuration files.
 * You need to have sudo privileges to run `root` commands.
 
 ## Usage

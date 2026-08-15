@@ -131,12 +131,19 @@ for id in "${!vscode_like_product_displaynames[@]}"; do
             'Info: Disabling manual proxy settings for %s...\n' \
             "${product_displayname}"
 
-        if ! jq \
-            'del(."http.proxy", ."http.proxyStrictSSL", ."http.noProxy")' \
-            "${product_settings}" \
-            >"${product_settings}.tmp"; then
+        jsonc_modify_opts=(
+            --format
+            --delete
+        )
+        # Workaround jsonc output nothing when the input is fed via `<` redirection
+        # https://github.com/ricsam/jsonc-cli/issues/6
+        if ! cat "${product_settings}" \
+                | jsonc modify "${jsonc_modify_opts[@]}" -p '["http.proxy"]' \
+                | jsonc modify "${jsonc_modify_opts[@]}" -p '["http.proxyStrictSSL"]' \
+                | jsonc modify "${jsonc_modify_opts[@]}" -p '["http.noProxy"]' \
+                >"${product_settings}.tmp"; then
             printf \
-                'Error: Unable to update %s proxy settings using jq.\n' \
+                'Error: Unable to update %s proxy settings using jsonc.\n' \
                 "${product_displayname}" \
                 1>&2
             return 1

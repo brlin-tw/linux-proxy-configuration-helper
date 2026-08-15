@@ -30,7 +30,7 @@ Three sourced files plus a config make up the runtime:
   overridden by the environment.
 * `functions.sh.source` — shared helpers: `compose_gsettings_ignorehosts`
   (GSettings `['a','b']` syntax), `compose_kio_ignorehosts` (KIO comma list,
-  strips leading `*`), `check_runtime_dependencies` (requires `jq`, `sqlite3`),
+  strips leading `*`), `check_runtime_dependencies` (requires `jq`, `jsonc`, `sqlite3`),
   and `query_kde_major_version` (parses `plasmashell --version`).
 * `set-proxy.sh.source` / `unset-proxy.sh.source` — the two entry points. Each
   resolves its own dir via `realpath`, sources config + functions, checks deps,
@@ -46,7 +46,7 @@ to one almost always needs the mirror change in the other:
 1. KDE/KIO — version-aware: picks `kwriteconfig${major}` based on the detected
    Plasma version, edits `kioslaverc`.
 1. VS Code-like apps (Code, Cursor, Antigravity) — edits each app's
-   `User/settings.json` via `jq` to a `.tmp` file then `mv -f`.
+   `User/settings.json` via `jsonc` to a `.tmp` file then `mv -f`.
 1. Git (`git config --global http.proxy`). Note `unset` tolerates exit code 5
    from `git config --unset` (key already absent).
 1. PackageKit (unset only) — deletes rows from `/var/lib/PackageKit/transactions.db`
@@ -59,7 +59,7 @@ to one almost always needs the mirror change in the other:
   (never `exit`) so a failure does not close the user's terminal. Preserve this.
 * Per-target failures of *desktop/service* settings emit `Warning:` to stderr
   and continue; failures of *core* operations (dependency checks, KDE version
-  query, `jq`/`mv` for editor configs) emit `Error:` and `return 1`.
+  query, `jsonc`/`mv` for editor configs) emit `Error:` and `return 1`.
 * Every action is announced with an `Info:` line; all diagnostics use `printf`
   (not `echo`) with explicit `1>&2` redirection for warnings/errors.
 * Indentation is 4 spaces; `kwriteconfig_opts=(...)` / `*_opts=(...)` arrays are

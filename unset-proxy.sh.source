@@ -171,6 +171,20 @@ fi
 
 if test -f "/var/lib/PackageKit/transactions.db"; then
     printf 'Info: Clearing proxy settings from PackageKit database...\n'
+
+    if ! command -v pkgcli >/dev/null; then
+        if ! command -v pkcon >/dev/null; then
+            printf \
+                'Error: Neither "pkgcli" nor "pkcon" command is available for managing PackageKit.\n' \
+                1>&2
+            return 1
+        else
+            pkgkit_command=pkcon
+        fi
+    else
+        pkgkit_command=pkgcli
+    fi
+
     if ! sudo sqlite3 "/var/lib/PackageKit/transactions.db" "DELETE FROM proxy;"; then
         printf \
             'Error: Unable to clear proxy settings from PackageKit database.\n' \
@@ -178,7 +192,7 @@ if test -f "/var/lib/PackageKit/transactions.db"; then
         return 1
     fi
 
-    if ! sudo pkcon quit; then
+    if ! sudo "${pkgkit_command}" quit; then
         printf \
             'Error: Unable to quit the PackageKit daemon to reload proxy settings.\n' \
             1>&2
